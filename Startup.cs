@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ReportApi.Interface;
+using ReportApi.Util;
 
 namespace ReportApi
 {
@@ -26,6 +28,10 @@ namespace ReportApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+
+            SetupDependencies(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +52,12 @@ namespace ReportApi
             {
                 endpoints.MapControllers();
             });
+        }
+
+
+        private static void SetupDependencies(IServiceCollection services)
+        {
+            services.AddSingleton<IAppConfiguration, AppConfiguration>();
         }
     }
 }
