@@ -14,6 +14,8 @@ namespace ReportApi.Repository
     public interface IReportRepository
     {
         Task<IEnumerable<ReportListDto>> GetReports(DateTime startDate, DateTime endDate, int pageNumber, int pageSize, string search);
+        Task<long> GetTotalTransactions(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<BarChartData>> GetBarChartData(DateTime startDate, DateTime endDate);
     }
     public class ReportRepository : IReportRepository
     {
@@ -22,6 +24,19 @@ namespace ReportApi.Repository
         public ReportRepository(IAppConfiguration configuration)
         {
             _defaultConnectionString = configuration.ReportDbConnectionString;
+        }
+
+        public async Task<IEnumerable<BarChartData>> GetBarChartData(DateTime startDate, DateTime endDate)
+        {
+            await using var connection = new SqlConnection(_defaultConnectionString);
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var count = await connection.QueryAsync<BarChartData>(
+                @"get_transaction_count_per_institution", new
+                {
+                    startDate,
+                    endDate
+                }, commandType: CommandType.StoredProcedure);
+            return count;
         }
 
         public async Task<IEnumerable<ReportListDto>> GetReports(DateTime startDate, DateTime endDate, int pageNumber, int pageSize, string search)
@@ -38,6 +53,19 @@ namespace ReportApi.Repository
                     endDate
                 }, commandType: CommandType.StoredProcedure);
             return report;
+        }
+
+        public async Task<long> GetTotalTransactions(DateTime startDate, DateTime endDate)
+        {
+            await using var connection = new SqlConnection(_defaultConnectionString);
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var count = await connection.QueryFirstOrDefaultAsync<long>(
+                @"get_transaction_count", new
+                {
+                    startDate,
+                    endDate
+                }, commandType: CommandType.StoredProcedure);
+            return count;
         }
     }
 }

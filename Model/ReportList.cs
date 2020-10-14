@@ -13,6 +13,8 @@ namespace ReportApi.Model
         public string CustomerAddress { get; set; }
         public decimal Amount { get; set; }
         public string Comment { get; set; }
+        public string InstitutionCode { get; set; }
+        public string InstitutionName { get; set; }
         public DateTime PaymentDate { get; set; }
 
     }

@@ -39,6 +39,8 @@ namespace ReportApi.Controllers
                         x.CustomerName,
                         x.CustomerAddress,
                         x.Amount,
+                        x.InstitutionCode,
+                        x.InstitutionName,
                         x.PaymentDate,
                         x.Comment
                     })
@@ -65,10 +67,13 @@ namespace ReportApi.Controllers
 
                 var transactionCount = await _reportService.GetTotalTransactions(startDate, endDate);
 
+                var barChartData = await _reportService.GetBarChartData(startDate, endDate);
+
 
                 return Ok(new {
                     responseCode = ResponseCode.Success,
-                    TotalTransactions = transactionCount
+                    TotalTransactions = transactionCount,
+                    barChartData
                 });
             }
             catch (AppException ex)

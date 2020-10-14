@@ -12,6 +12,7 @@ namespace ReportApi.Util
     {
         Task<IEnumerable<ReportListDto>> GetReports(DateTime startDate, DateTime endDate, int pageNumber, int pageSize, string searchText);
         Task<long> GetTotalTransactions(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<BarChartData>> GetBarChartData(DateTime startDate, DateTime endDate);
     }
     public class ReportService : IReportService
     {
@@ -21,6 +22,11 @@ namespace ReportApi.Util
             _reportRepository = reportRepository;
         }
 
+        public async Task<IEnumerable<BarChartData>> GetBarChartData(DateTime startDate, DateTime endDate)
+        {
+            return await _reportRepository.GetBarChartData(startDate, endDate);
+        }
+
         public async Task<IEnumerable<ReportListDto>> GetReports(DateTime startDate, DateTime endDate, int pageNumber, int pageSize, string searchText)
         {
 
@@ -28,6 +34,11 @@ namespace ReportApi.Util
                 throw new AppException("StartDate Cannot be greater than enddate");
 
             return await _reportRepository.GetReports(startDate, endDate, pageNumber, pageSize, searchText);
+        }
+
+        public async Task<long> GetTotalTransactions(DateTime startDate, DateTime endDate)
+        {
+            return await _reportRepository.GetTotalTransactions(startDate, endDate);
         }
     }
 
