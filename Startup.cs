@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ReportApi.Interface;
+using ReportApi.Repository;
 using ReportApi.Util;
 
 namespace ReportApi
@@ -57,6 +58,8 @@ namespace ReportApi
 
         private static void SetupDependencies(IServiceCollection services)
         {
+            services.AddTransient<IReportService, ReportService>();
+            services.AddTransient<IReportRepository, ReportRepository>();
             services.AddSingleton<IAppConfiguration, AppConfiguration>();
         }
     }
